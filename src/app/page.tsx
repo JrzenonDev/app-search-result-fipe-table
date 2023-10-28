@@ -1,10 +1,12 @@
-import { Button } from "@mui/material";
+import { MainLayout } from "./components/Layouts/MainLayout";
+import { Form } from "./components/Form";
 
 export default function Home() {
   return (
-    <main>
-      <h2>Hello</h2>
-      <Button variant="text">Text</Button>
+    <main className="main">
+      <MainLayout>
+        <Form />
+      </MainLayout>
     </main>
   );
 }
