@@ -6,7 +6,7 @@ import { theme } from "../../libs/theme";
 
 const roboto = Roboto({
   subsets: ["latin"],
-  weight: ["300"],
+  weight: ["400"],
 });
 
 export const metadata: Metadata = {
