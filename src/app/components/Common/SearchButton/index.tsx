@@ -2,15 +2,15 @@ import React from "react";
 import { StyledSearchButton } from "./style";
 
 interface SearchButtonProps {
-  title: string;
   color: string;
   onClick: () => void;
+  enable: boolean;
 }
 
 export default function SearchButton({
-  title,
   color,
   onClick,
+  enable,
 }: SearchButtonProps) {
   return (
     <>
@@ -18,8 +18,9 @@ export default function SearchButton({
         sx={{ background: `${color}` }}
         onClick={onClick}
         variant="contained"
+        disabled={enable}
       >
-        {title}
+        Consultar preço
       </StyledSearchButton>
     </>
   );

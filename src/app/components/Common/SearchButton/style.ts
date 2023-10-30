@@ -6,6 +6,5 @@ export const StyledSearchButton = styled(Button)`
   padding: 10px 50px;
   text-transform: capitalize;
   border-radius: 3px;
-  background: #e0e0e0 !important;
   color: #a9a7af;
 `;

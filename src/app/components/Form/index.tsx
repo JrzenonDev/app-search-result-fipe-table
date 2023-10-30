@@ -25,15 +25,12 @@ interface CarModel {
   nome: string;
 }
 
-const button = {
-  title: "Consultar preço",
-  color: "#1E90FF",
-};
-
 export function Form() {
   const [carBrandData, setCarBrandData] = useState([]);
   const [selectedModels, setSelectedModels] = useState<CarModel[]>([]);
   const [selectedYears, setSelectedYears] = useState([]);
+  const [isVisibleYear, setIsVisibleYear] = useState(false);
+  const [isButtonEnabled, setIsButtonEnabled] = useState(false);
 
   const selectedBrand = useSelector((state: RootState) => state.selectedBrand);
   const selectedModel = useSelector((state: RootState) => state.selectedModel);
@@ -53,6 +50,9 @@ export function Form() {
           console.log(models);
           dispatch(updateModels(models));
           setSelectedModels(models);
+
+          setIsVisibleYear(false);
+          setIsButtonEnabled(true);
         } else {
           console.error("API response does not contain 'models' key.");
         }
@@ -67,6 +67,9 @@ export function Form() {
       const modelCode = model.codigo;
       dispatch(selectModel(modelCode));
 
+      setSelectedYears([]);
+      setIsVisibleYear(true);
+
       //dispatch(resetSelection());
       console.log("selectedBrand:", selectedBrand);
       console.log("selectedModel:", selectedModel);
@@ -79,8 +82,8 @@ export function Form() {
 
   const handleYearSelection = (year: CarInfo | null) => {
     if (year) {
-      const selectedYear = year.codigo;
-      dispatch(selectYear(selectedYear));
+      const selectedYearValue = year.codigo; // Renomeie a variável para evitar conflito de nomes
+      dispatch(selectYear(selectedYearValue)); // Atualize a variável correta
     }
   };
 
@@ -120,6 +123,12 @@ export function Form() {
     fetchCarBrands();
   }, []);
 
+  useEffect(() => {
+    if (selectedBrand && selectedModel && selectedYear) {
+      setIsButtonEnabled(true);
+    }
+  }, [selectedBrand, selectedModel, selectedYear]);
+
   return (
     <StyledSection>
       <StyledFormContainer>
@@ -131,22 +140,25 @@ export function Form() {
             carInfo={carBrandData}
             onSelection={handleBrandSelection}
             titleLabel="Marca"
+            isVisible={true}
           />
           <SelectAutoComplete
             carInfo={selectedModels}
             onSelection={handleModelSelection}
             titleLabel="Modelo"
+            isVisible={true}
           />
           <SelectAutoComplete
             carInfo={selectedYears}
             onSelection={handleYearSelection}
             titleLabel="Ano"
+            isVisible={isVisibleYear}
           />
 
           <SearchButton
             onClick={handleCarPrice}
-            title={button.title}
-            color={button.color}
+            color={isButtonEnabled ? "#5d00bf" : "#e0e0e0"}
+            enable={isButtonEnabled ? false : true}
           />
         </form>
       </StyledFormContainer>

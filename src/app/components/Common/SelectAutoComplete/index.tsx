@@ -12,6 +12,7 @@ interface SelectAutoCompleteProps {
   carInfo: CarInfo[];
   onSelection: (option: CarInfo | null, titleLabel: string) => void;
   titleLabel: string;
+  isVisible?: boolean;
 }
 
 export function SelectAutoComplete(props: SelectAutoCompleteProps) {
@@ -20,7 +21,7 @@ export function SelectAutoComplete(props: SelectAutoCompleteProps) {
     console.log("what was selected", option);
   };
 
-  return (
+  return props.isVisible ? ( // Verifique se isVisible é verdadeiro antes de renderizar o Autocomplete
     <Autocomplete
       disablePortal
       id="combo-box-demo"
@@ -36,5 +37,5 @@ export function SelectAutoComplete(props: SelectAutoCompleteProps) {
         <TextField {...params} label={props.titleLabel} />
       )}
     />
-  );
+  ) : null;
 }
