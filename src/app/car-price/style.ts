@@ -6,6 +6,7 @@ export const StyledSectionCarPrice = styled("section")`
   align-items: center;
   color: #424242;
   height: 100vh;
+  text-align: center;
 
   h1 {
     font-size: 40px;
