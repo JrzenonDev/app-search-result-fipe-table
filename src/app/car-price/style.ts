@@ -16,6 +16,12 @@ export const StyledSectionCarPrice = styled("section")`
     color: #777675;
   }
 
+  a {
+    color: #777675;
+    text-decoration: underline;
+    font-size: 14px;
+  }
+
   div {
     display: flex;
     flex-direction: column;
