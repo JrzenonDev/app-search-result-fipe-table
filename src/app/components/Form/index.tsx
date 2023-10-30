@@ -14,6 +14,8 @@ import {
   fetchCarYears,
 } from "@/app/hooks/fetchData";
 import { updateModels } from "@/redux/carActions";
+import { useRouter } from "next/navigation";
+import { saveCarPriceData } from "@/redux/actions";
 
 interface CarInfo {
   codigo: number;
@@ -37,6 +39,7 @@ export function Form() {
   const selectedYear = useSelector((state: RootState) => state.selectedYear);
 
   const dispatch = useDispatch();
+  const router = useRouter();
 
   const handleBrandSelection = async (brand: CarInfo | null) => {
     if (brand) {
@@ -82,8 +85,8 @@ export function Form() {
 
   const handleYearSelection = (year: CarInfo | null) => {
     if (year) {
-      const selectedYearValue = year.codigo; // Renomeie a variável para evitar conflito de nomes
-      dispatch(selectYear(selectedYearValue)); // Atualize a variável correta
+      const selectedYearValue = year.codigo;
+      dispatch(selectYear(selectedYearValue));
     }
   };
 
@@ -103,6 +106,10 @@ export function Form() {
           selectedYear
         );
         console.log("Car price data:", carPriceData);
+
+        dispatch(saveCarPriceData(carPriceData));
+
+        router.push("/car-price");
       } catch (error) {
         console.error("Error when searching for car price:", error);
       }
