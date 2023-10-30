@@ -16,6 +16,7 @@ import {
 import { updateModels } from "@/redux/carActions";
 import { useRouter } from "next/navigation";
 import { saveCarPriceData } from "@/redux/actions";
+import { Snackbar } from "@mui/material";
 
 interface CarInfo {
   codigo: number;
@@ -33,6 +34,7 @@ export function Form() {
   const [selectedYears, setSelectedYears] = useState([]);
   const [isVisibleYear, setIsVisibleYear] = useState(false);
   const [isButtonEnabled, setIsButtonEnabled] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
   const selectedBrand = useSelector((state: RootState) => state.selectedBrand);
   const selectedModel = useSelector((state: RootState) => state.selectedModel);
@@ -40,6 +42,26 @@ export function Form() {
 
   const dispatch = useDispatch();
   const router = useRouter();
+
+  const openSnackbar = () => {
+    setSnackbarOpen(true);
+  };
+
+  const resetFormState = () => {
+    dispatch(selectBrand(null));
+    dispatch(selectModel(null));
+    dispatch(selectYear(null));
+    setSelectedModels([]);
+    setSelectedYears([]);
+    setIsVisibleYear(false);
+  };
+
+  const handleSnackbarClose = (event: any, reason: any) => {
+    if (reason === "clickaway") {
+      return;
+    }
+    setSnackbarOpen(false);
+  };
 
   const handleBrandSelection = async (brand: CarInfo | null) => {
     if (brand) {
@@ -55,7 +77,7 @@ export function Form() {
           setSelectedModels(models);
 
           setIsVisibleYear(false);
-          setIsButtonEnabled(true);
+          setIsButtonEnabled(false);
         } else {
           console.error("API response does not contain 'models' key.");
         }
@@ -70,10 +92,16 @@ export function Form() {
       const modelCode = model.codigo;
       dispatch(selectModel(modelCode));
 
+      dispatch(selectYear(null));
+
       setSelectedYears([]);
       setIsVisibleYear(true);
 
-      //dispatch(resetSelection());
+      if (selectedBrand && selectedModel && selectedYear !== null) {
+        setIsButtonEnabled(false);
+        openSnackbar();
+      }
+
       console.log("selectedBrand:", selectedBrand);
       console.log("selectedModel:", selectedModel);
 
@@ -87,6 +115,7 @@ export function Form() {
     if (year) {
       const selectedYearValue = year.codigo;
       dispatch(selectYear(selectedYearValue));
+      setIsButtonEnabled(true);
     }
   };
 
@@ -131,10 +160,38 @@ export function Form() {
   }, []);
 
   useEffect(() => {
-    if (selectedBrand && selectedModel && selectedYear) {
+    console.log("selectedBrand useEffect:", selectedBrand);
+    console.log("selectedModel useEffect:", selectedModel);
+    console.log("selectedYear useEffect:", selectedYear);
+    if (selectedBrand && selectedModel && selectedYear !== null) {
       setIsButtonEnabled(true);
+    } else {
+      setIsButtonEnabled(false);
     }
   }, [selectedBrand, selectedModel, selectedYear]);
+
+  useEffect(() => {
+    console.log("window.location.pathname:", window.location.pathname);
+
+    if (window.location.pathname === "/") {
+      resetFormState();
+      console.log("Form state reset.");
+    }
+    const handlePopState = () => {
+      if (window.location.pathname === "/") {
+        resetFormState();
+        console.log("Form state reset.");
+      }
+
+      console.log("window.location.pathname:", window.location.pathname);
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
 
   return (
     <StyledSection>
@@ -168,6 +225,12 @@ export function Form() {
             enable={isButtonEnabled ? false : true}
           />
         </form>
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={6000}
+          onClose={handleSnackbarClose}
+          message="Modelo alterado. O ano precisa ser redefinido."
+        />
       </StyledFormContainer>
     </StyledSection>
   );
