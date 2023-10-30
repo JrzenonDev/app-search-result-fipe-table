@@ -72,7 +72,6 @@ export function Form() {
         const data = await fetchCarModels(brandCode);
         if (data.modelos) {
           const models: CarModel[] = data.modelos;
-          console.log(models);
           dispatch(updateModels(models));
           setSelectedModels(models);
 
@@ -102,9 +101,6 @@ export function Form() {
         openSnackbar();
       }
 
-      console.log("selectedBrand:", selectedBrand);
-      console.log("selectedModel:", selectedModel);
-
       fetchCarYears(selectedBrand, modelCode).then((anos) => {
         setSelectedYears(anos);
       });
@@ -120,10 +116,6 @@ export function Form() {
   };
 
   const handleCarPrice = async () => {
-    console.log("selectedBrand:", selectedBrand);
-    console.log("selectedModel:", selectedModel);
-    console.log("selectedYear:", selectedYear);
-
     if (selectedBrand && selectedModel && selectedYear) {
       const brandCode = selectedBrand;
       const modelCode = selectedModel;
@@ -134,7 +126,6 @@ export function Form() {
           modelCode,
           selectedYear
         );
-        console.log("Car price data:", carPriceData);
 
         dispatch(saveCarPriceData(carPriceData));
 
@@ -160,9 +151,6 @@ export function Form() {
   }, []);
 
   useEffect(() => {
-    console.log("selectedBrand useEffect:", selectedBrand);
-    console.log("selectedModel useEffect:", selectedModel);
-    console.log("selectedYear useEffect:", selectedYear);
     if (selectedBrand && selectedModel && selectedYear !== null) {
       setIsButtonEnabled(true);
     } else {
@@ -171,19 +159,13 @@ export function Form() {
   }, [selectedBrand, selectedModel, selectedYear]);
 
   useEffect(() => {
-    console.log("window.location.pathname:", window.location.pathname);
-
     if (window.location.pathname === "/") {
       resetFormState();
-      console.log("Form state reset.");
     }
     const handlePopState = () => {
       if (window.location.pathname === "/") {
         resetFormState();
-        console.log("Form state reset.");
       }
-
-      console.log("window.location.pathname:", window.location.pathname);
     };
 
     window.addEventListener("popstate", handlePopState);

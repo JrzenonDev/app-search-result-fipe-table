@@ -18,7 +18,6 @@ interface SelectAutoCompleteProps {
 export function SelectAutoComplete(props: SelectAutoCompleteProps) {
   const handleSelectedOption = (option: CarInfo | null) => {
     props.onSelection(option, props.titleLabel); // update state use function callback
-    console.log("what was selected", option);
   };
 
   return props.isVisible ? ( // Verifique se isVisible é verdadeiro antes de renderizar o Autocomplete
